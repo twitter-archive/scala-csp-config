@@ -4,12 +4,7 @@ version := "1.0"
 
 conflictWarning := ConflictWarning.disable
 
-resolvers ++= Seq(
-  Resolver.sonatypeRepo("releases"),
-  "Twitter Maven" at "http://maven.twttr.com",
-  "Finatra Repo" at "http://twitter.github.com/finatra",
-  Resolver.sonatypeRepo("snapshots")
-)
+resolvers += "Twitter Maven" at "http://maven.twttr.com"
 
 libraryDependencies ++= Seq(
     "commons-codec" % "commons-codec" % "1.10",
