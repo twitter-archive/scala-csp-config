@@ -1,4 +1,4 @@
-package com.twitter.appsec.csp
+package com.twitter.csp
 
 import com.twitter.finagle.http.{Method, Response, Request}
 import eu.bitwalker.useragentutils.UserAgent

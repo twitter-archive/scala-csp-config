@@ -1,4 +1,4 @@
-package com.twitter.appsec.csp
+package com.twitter.csp
 
 object CspFixtures {
 

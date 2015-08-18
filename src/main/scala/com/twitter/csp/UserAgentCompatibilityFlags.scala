@@ -1,4 +1,4 @@
-package com.twitter.appsec.csp
+package com.twitter.csp
 
 import eu.bitwalker.useragentutils.UserAgent
 import com.twitter.util.Try

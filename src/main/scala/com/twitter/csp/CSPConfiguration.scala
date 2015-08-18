@@ -1,4 +1,4 @@
-package com.twitter.appsec.csp
+package com.twitter.csp
 
 import org.apache.commons.codec.binary.Base32
 import org.jboss.netty.handler.codec.http.QueryStringEncoder
