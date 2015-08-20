@@ -2,7 +2,7 @@ package com.twitter.csp
 
 object CspFixtures {
 
-  val macawName = "macaw-test"
+  val name = "test"
 
   val chromeUA = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
 
@@ -12,7 +12,7 @@ object CspFixtures {
 
   val ieUA = "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko"
 
-  def defaultConfigEnforce: CspConfiguration = { new EnforcingCspConfiguration()
+  def defaultConfigEnforce: CspConfiguration = { new CspConfiguration(reportOnly = false)
     .withSrcForDirective("default-src", "'self'")
     .withSrcForDirective("script-src", "'self'")
     .withSrcForDirective("style-src", "'self'")
@@ -26,7 +26,7 @@ object CspFixtures {
     .withSrcForDirective("report-uri", "https://twitter.com/i/csp_report")
   }
 
-  def defaultConfigEnforceWithNonce: CspConfiguration = { new EnforcingCspConfiguration()
+  def defaultConfigEnforceWithNonce: CspConfiguration = { new CspConfiguration(reportOnly = false)
     .withSrcForDirective("default-src", "'self'")
     .withSrcForDirective("script-src", "'self'")
     .withSrcForDirective("style-src", "'self'")
@@ -38,10 +38,10 @@ object CspFixtures {
     .withSrcForDirective("child-src", "'self'")
     .withSrcForDirective("frame-ancestors", "'self'")
     .withSrcForDirective("report-uri", "https://twitter.com/i/csp_report")
-    .withScriptNonce()
+    .withScriptNonce
   }
 
-  def defaultConfigReportOnly: CspConfiguration = { new ReportOnlyCspConfiguration()
+  def defaultConfigReportOnly: CspConfiguration = { new CspConfiguration(reportOnly = true)
     .withSrcForDirective("default-src", "'self'")
     .withSrcForDirective("script-src", "'self'")
     .withSrcForDirective("style-src", "'self'")

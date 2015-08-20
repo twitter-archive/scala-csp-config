@@ -16,7 +16,7 @@ class CSPHeaderTest
     request.headers().add("user-agent", CspFixtures.chromeUA)
     val config: CspConfiguration = CspFixtures.defaultConfigEnforce
     assertEquals(config.reportOnly, false)
-    val cspHeader: Option[(String, String)] = config.generateHeaderForRequest(userAgentString = request.userAgent, appName = CspFixtures.macawName)
+    val cspHeader: Option[(String, String)] = config.generateHeaderForRequest(userAgentString = request.userAgent, appName = CspFixtures.name)
     assertTrue(cspHeader != None)
     val cspName: String = cspHeader.get._1
     val cspValue: String = cspHeader.get._2
@@ -38,7 +38,7 @@ class CSPHeaderTest
     request.headers().add("user-agent", CspFixtures.chromeUA)
     val config: CspConfiguration = CspFixtures.defaultConfigReportOnly
     assertEquals(config.reportOnly, true)
-    val cspHeader: Option[(String, String)] = config.generateHeaderForRequest(userAgentString = request.userAgent, appName = CspFixtures.macawName)
+    val cspHeader: Option[(String, String)] = config.generateHeaderForRequest(userAgentString = request.userAgent, appName = CspFixtures.name)
     assertTrue(cspHeader != None)
     val cspName: String = cspHeader.get._1
     val cspValue: String = cspHeader.get._2

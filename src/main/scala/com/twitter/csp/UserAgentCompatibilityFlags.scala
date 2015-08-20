@@ -1,7 +1,7 @@
 package com.twitter.csp
 
-import eu.bitwalker.useragentutils.UserAgent
 import com.twitter.util.Try
+import eu.bitwalker.useragentutils.UserAgent
 
 case class UserAgentCompatibilityFlags(
   supportsFrameAncestors: Boolean,
@@ -24,7 +24,7 @@ object UserAgentCompatibilityFlags {
   }
 
   def supportsFrameAncestor(browserName: String, browserMajorVersion: Option[Int]): Boolean = {
-    (browserName == "Firefox") ||
+    browserName == "Firefox" ||
     (browserMajorVersion.exists { _ >= 40 } && browserName == "Chrome")
   }
 
@@ -36,13 +36,13 @@ object UserAgentCompatibilityFlags {
   def supportsUnsafeInlineWithNonce(browserName: String): Boolean = {
     // chrome follows the spec (ignores 'unsafe-inline' when a nonce is present), but firefox and safari don't
     // bug link: https://bugzilla.mozilla.org/show_bug.cgi?id=1004703
-    (browserName == "Chrome")
+    browserName == "Chrome"
   }
 
   def supportsCSP(browserName: String): Boolean = {
-    (browserName == "Chrome") ||
-    (browserName == "Firefox") ||
-    (browserName == "Safari")
+    browserName == "Chrome" ||
+    browserName == "Firefox" ||
+    browserName == "Safari"
   }
 
   def apply(userAgent: Option[String]): UserAgentCompatibilityFlags = {

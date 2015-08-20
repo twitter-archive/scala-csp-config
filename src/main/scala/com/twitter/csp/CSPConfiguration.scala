@@ -3,41 +3,20 @@ package com.twitter.csp
 import org.apache.commons.codec.binary.Base32
 import org.jboss.netty.handler.codec.http.QueryStringEncoder
 import scala.collection.mutable
-import scala.util.matching.Regex
 
-trait ConfigBuilder {
-  def withSrcForDirective(directive: String, src: String): ConfigBuilder
-  def withSourcesForDirective(directive: String, sources: Seq[String]): ConfigBuilder
-  def withoutSrcForDirective(directive: String, src: String): ConfigBuilder
-  def withoutDirective(directive: String): ConfigBuilder
-  def withoutScriptNonce(): ConfigBuilder
-  def withoutStyleNonce(): ConfigBuilder
-  def withUnsafeInlineScript(): ConfigBuilder
-  def withUnsafeInlineStyle(): ConfigBuilder
-  def withUnsafeEval(): ConfigBuilder
-  def withSelfForDirective(directive: String): ConfigBuilder
-  def withNoSourcesAllowedForDirective(directive: String): ConfigBuilder
-  def withScriptNonce(): ConfigBuilder
-  def withStyleNonce(): ConfigBuilder
-  /** Sets the configuration to tag a uri with parameters. */
-  def withTag(): ConfigBuilder
-  /** Sets the configuration to not tag a uri with parameters. */
-  def withoutTag(): ConfigBuilder
-  def copy: ConfigBuilder
-  def generateHeaderForRequest(
-    userAgentString: Option[String],
-    scriptNonce: Option[String] = None,
-    styleNonce: Option[String] = None,
-    appName: String
-  ): Option[(String, String)]
+object CspConfiguration {
+  val StandardReportOnlyHeaderName = "Content-Security-Policy-Report-Only"
+  val StandardEnforcingHeaderName = "Content-Security-Policy"
+  val ApplicationNameParameterName = "a"
+  val ReportOnlyParameterName = "ro"
+  val FrameAncestorsRegex = "frame-ancestors[^;]+;".r
 }
 
-trait CspConfiguration extends ConfigBuilder {
+class CspConfiguration(val reportOnly: Boolean) extends ConfigurationBuilder {
 
   import CspConfiguration._
 
   val headersMap: mutable.Map[String, mutable.Set[String]] = mutable.Map()
-  val reportOnly: Boolean = false
 
   var addTag: Boolean = true
 
@@ -74,35 +53,35 @@ trait CspConfiguration extends ConfigBuilder {
     this
   }
 
-  override def withoutScriptNonce(): CspConfiguration = {
+  override def withoutScriptNonce: CspConfiguration = {
     this.allowsScriptNonce = false
     this
   }
 
-  override def withoutStyleNonce(): CspConfiguration = {
+  override def withoutStyleNonce: CspConfiguration = {
     this.allowsStyleNonce = false
     this
   }
 
-  override def withTag(): CspConfiguration = {
+  override def withTag: CspConfiguration = {
     this.addTag = true
     this
   }
 
-  override def withoutTag(): CspConfiguration = {
+  override def withoutTag: CspConfiguration = {
     this.addTag = false
     this
   }
 
-  override def withUnsafeInlineScript(): CspConfiguration = {
+  override def withUnsafeInlineScript: CspConfiguration = {
     this.withSrcForDirective("script-src", "'unsafe-inline'")
   }
 
-  override def withUnsafeInlineStyle(): CspConfiguration = {
+  override def withUnsafeInlineStyle: CspConfiguration = {
     this.withSrcForDirective("style-src", "'unsafe-inline'")
   }
 
-  override def withUnsafeEval(): CspConfiguration = {
+  override def withUnsafeEval: CspConfiguration = {
     this.withSrcForDirective("script-src", "'unsafe-eval'")
   }
 
@@ -114,12 +93,12 @@ trait CspConfiguration extends ConfigBuilder {
     this.withSrcForDirective(directive, "'none'")
   }
 
-  override def withScriptNonce(): CspConfiguration = {
+  override def withScriptNonce: CspConfiguration = {
     this.allowsScriptNonce = true
     this
   }
 
-  override def withStyleNonce(): CspConfiguration = {
+  override def withStyleNonce: CspConfiguration = {
     this.allowsStyleNonce = true
     this
   }
@@ -170,8 +149,7 @@ trait CspConfiguration extends ConfigBuilder {
     userAgentString: Option[String],
     scriptNonce: Option[String] = None,
     styleNonce: Option[String] = None,
-    appName: String
-  ): Option[(String, String)] = {
+    appName: String): Option[(String, String)] = {
 
     val headerName: String = if (this.reportOnly) {
       StandardReportOnlyHeaderName
@@ -223,39 +201,10 @@ trait CspConfiguration extends ConfigBuilder {
   }
 
   override def copy: CspConfiguration = {
-    if (this.reportOnly) {
-      val newConfig = new ReportOnlyCspConfiguration()
-      this.headersMap.keys.foreach { directive =>
-        newConfig.headersMap(directive) = this.headersMap(directive)
-      }
-      newConfig
-    } else {
-      val newConfig = new EnforcingCspConfiguration()
-      this.headersMap.keys.foreach { directive =>
-        newConfig.headersMap(directive) = this.headersMap(directive)
-      }
-      newConfig
+    val newConfig = new CspConfiguration(this.reportOnly)
+    this.headersMap.keys.foreach { directive =>
+      newConfig.headersMap(directive) = this.headersMap(directive)
     }
+    newConfig 
   }
-}
-
-class NoNonceProvidedException extends
-  IllegalArgumentException("The configuration specifies to use a nonce, but no nonce was given.")
-
-class EnforcingCspConfiguration extends CspConfiguration {
-
-  override val reportOnly: Boolean = false
-}
-
-class ReportOnlyCspConfiguration extends CspConfiguration {
-
-  override val reportOnly: Boolean = true
-}
-
-object CspConfiguration {
-  val StandardReportOnlyHeaderName = "Content-Security-Policy-Report-Only"
-  val StandardEnforcingHeaderName = "Content-Security-Policy"
-  val ApplicationNameParameterName = "a"
-  val ReportOnlyParameterName = "ro"
-  val FrameAncestorsRegex = "frame-ancestors[^;]+;".r
 }
