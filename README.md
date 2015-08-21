@@ -6,7 +6,11 @@ The Github source repository is [here](https://github.com/twitter/finagle-csp). 
 
 ## Building
 
+[TODO]
+
 ## Usage
+
+[Small example here of a configuration and how it would show up in a response]
 
 ## Contributors
 
@@ -14,7 +18,5 @@ The Github source repository is [here](https://github.com/twitter/finagle-csp). 
 * Matt Finifter
 
 ## License
-
-Copyright 2010-2013 Twitter, Inc.
 
 Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
