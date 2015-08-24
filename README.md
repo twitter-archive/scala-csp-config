@@ -18,50 +18,49 @@ The finished jar will be in `target/scala-2.10/`.
 
 Create a configuration: 
 
-  val config = new CSPConfiguration()
+    val config = new CSPConfiguration()
 
 Add a single source to a directive:
 
-  config.withSrcForDirective()
+    config.withSrcForDirective()
 
 Add a set of sources to a directive:
 
-  config.withSourcesForDirective()
+    config.withSourcesForDirective()
 
 Remove a source from a directive:
 
-  config.withoutSrcForDirective()
+    config.withoutSrcForDirective()
 
 Remove an entire directive from the policy:
 
-  config.withoutDirective()
+    config.withoutDirective()
 
 Add 'self' source to a directive:
 
-  config.withSelfForDirective()
+    config.withSelfForDirective()
 
 Add 'none' source to a directive:
 
-  config.withNoSourcesAllowedForDirective()
+    config.withNoSourcesAllowedForDirective()
 
 Generate the header in string format (suitable for including in a HTTP response):
 
-  config.generateHeaderForRequest()
+    config.generateHeaderForRequest()
 
 ### Advanced Usage
 
 To add a nonce to the script-src (or style-src directive), there are two steps:
 
 1) Tell the config to use a nonce for script-src (or style-src) 
-  config.withScriptNonce (or config.withStyleNonce)
+    config.withScriptNonce (or config.withStyleNonce)
 
 2) Supply a nonce when generating a header:
-  config.generateHeaderForRequest()
+    config.generateHeaderForRequest()
 
 To tag a report uri:
 
-1) Tell the config to tag the uri:
-  config.withTag
+    config.withTag
 
 The parameters that are used for tagging are `ApplicationNameParameterName` and `ReportOnlyParameterName`.
 
