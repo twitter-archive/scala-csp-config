@@ -4,54 +4,47 @@ import com.twitter.util.Try
 import eu.bitwalker.useragentutils.UserAgent
 
 case class UserAgentCompatibilityFlags(
-  supportsFrameAncestors: Boolean,
-  supportsScriptNonce: Boolean,
-  supportsUnsafeInlineWithNonce: Boolean,
-  supportsCSP: Boolean)
+  supportsCsp: Boolean,
+  supportsNonces: Boolean,
+  supportsFrameAncestors: Boolean
+)
 
 object UserAgentCompatibilityFlags {
 
-  private def userAgentAttributes(userAgentString: Option[String]) = {
+  private val Chrome: String = "Chrome"
+  private val Firefox: String = "Firefox"
+  private val Safari: String = "Safari"
+  private val ChromeMinimumNonceVersion = 36
+  private val FirefoxMinimumNonceVersion = 36
+  private val ChromeMinimumFrameAncestorsVersion = 40
+
+  private def getBrowserNameAndVersion(userAgentString: Option[String]): (String, Option[Int]) = {
     val userAgent = new UserAgent(userAgentString.getOrElse(""))
-    val browser = userAgent.getBrowser
-    val browserName = browser.getGroup.getName
-    val browserMajorVersion = for {
-      userAgent <- userAgentString
-      version <- Option(browser.getVersion(userAgent))
-      majorVersion <- Try(version.getMajorVersion.toInt).toOption
-    } yield majorVersion
-    (browserName, browserMajorVersion)
+    val browserName = userAgent.getBrowser.getGroup.getName
+    val versionNumber = Try(userAgent.getBrowserVersion.getMajorVersion.toInt).toOption
+    (browserName, versionNumber)
   }
 
-  def supportsFrameAncestor(browserName: String, browserMajorVersion: Option[Int]): Boolean = {
-    browserName == "Firefox" ||
-    (browserMajorVersion.exists { _ >= 40 } && browserName == "Chrome")
+  private def supportsCsp(browserName: String, browserMajorVersion: Option[Int]): Boolean = {
+    browserName == Chrome || browserName == Firefox || browserName == Safari
   }
 
-  def supportsScriptNonce(browserName: String, browserMajorVersion: Option[Int]): Boolean = {
-    (browserMajorVersion.exists { _ >= 36 } && browserName == "Chrome") ||
-    (browserMajorVersion.exists { _ >= 36 } && browserName == "Firefox")
+  private def supportsNonces(browserName: String, browserMajorVersion: Option[Int]): Boolean = {
+    (browserMajorVersion.exists { _ >= ChromeMinimumNonceVersion } && browserName == Chrome) ||
+      (browserMajorVersion.exists { _ >= FirefoxMinimumNonceVersion } && browserName == Firefox)
   }
 
-  def supportsUnsafeInlineWithNonce(browserName: String): Boolean = {
-    // chrome follows the spec (ignores 'unsafe-inline' when a nonce is present), but firefox and safari don't
-    // bug link: https://bugzilla.mozilla.org/show_bug.cgi?id=1004703
-    browserName == "Chrome"
-  }
-
-  def supportsCSP(browserName: String): Boolean = {
-    browserName == "Chrome" ||
-    browserName == "Firefox" ||
-    browserName == "Safari"
+  private def supportsFrameAncestors(browserName: String, browserMajorVersion: Option[Int]): Boolean = {
+    browserName == Firefox ||
+      (browserMajorVersion.exists { _ >= ChromeMinimumFrameAncestorsVersion } && browserName == Chrome)
   }
 
   def apply(userAgent: Option[String]): UserAgentCompatibilityFlags = {
-    val browserName = userAgentAttributes(userAgent)._1
-    val browserMajorVersion = userAgentAttributes(userAgent)._2
+    val (name, majorVersion) = getBrowserNameAndVersion(userAgent)
     new UserAgentCompatibilityFlags(
-      supportsFrameAncestor(browserName, browserMajorVersion),
-      supportsScriptNonce(browserName, browserMajorVersion),
-      supportsUnsafeInlineWithNonce(browserName),
-      supportsCSP(browserName))
+      supportsCsp(name, majorVersion),
+      supportsNonces(name, majorVersion),
+      supportsFrameAncestors(name, majorVersion)
+    )
   }
 }

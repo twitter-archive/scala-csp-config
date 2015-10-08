@@ -53,6 +53,5 @@ libraryDependencies ++= Seq(
     "eu.bitwalker" % "UserAgentUtils" % "1.16",
     "io.netty" % "netty" % "3.10.1.Final",
     "junit" % "junit" % "4.11" % "test",
-    "org.scalatest" %% "scalatest" % "3.0.0-M7" % "test",
-    "com.twitter" %% "finagle-http" % "6.27.0" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.0-M7" % "test"
   )
