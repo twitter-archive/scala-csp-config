@@ -1,4 +1,4 @@
-name := "finagle-csp"
+name := "scala-csp-config"
 
 version := "1.0"
 

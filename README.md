@@ -1,8 +1,8 @@
-# Finagle-CSP
+# scala-csp-config
 
 A Scala library for configuring Content Security Policy headers for HTTP responses.
 
-The Github source repository is [here](https://github.com/twitter/finagle-csp). Patches and contributions are welcome.
+The Github source repository is [here](https://github.com/twitter/scala-csp-config). Contributions are welcome.
 
 ## Building
 
@@ -14,7 +14,7 @@ The finished jar will be in `target/scala-2.10/`.
 
 ## Usage
 
-To read how and why CSP is used, please see the specification [here](http://www.w3.org/TR/CSP2/).
+To read about how and why CSP is used, please see the specification [here](http://www.w3.org/TR/CSP2/).
 
 ### Basic Usage
 
@@ -103,7 +103,7 @@ The code above generates the following header.
 ## Contributors
 
 * Annie Edmundson
-* Matt Finifter
+* Matthew Finifter
 
 ## License
 
